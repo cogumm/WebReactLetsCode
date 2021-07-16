@@ -142,3 +142,248 @@ Se desejar alterar algo no HTML da página por fora do React, você pode encontr
 Agora você tem uma aplicação vazia que produz uma página em branco no navegador. Não deve haver erros em seu terminal/powershell.
 
 Se estiver tudo certo, estamos prontos para continuar.
+
+## Componente Simples
+
+Seguindo o guia para criação de um novo projeto você deve ter um projeto rodando e sem conteúdo.
+
+Vamos começar a criar componentes nele. Começaremos pelos componentes criados como classes.
+
+Podemos reaproveitar o componente App para esse exemplo. App é um componente funcional, vamos abordá-los mais para frente no curso. Por enquanto vamos transformá-lo em um componente tipo classe.
+
+Para começar apague a função App:
+
+```jsx
+import React from 'react';
+
+export default App;
+```
+
+Vamos criar uma classe App no lugar:
+
+```jsx
+import React from 'react';
+
+class App extends React.Component{
+
+}
+
+export default App;
+```
+
+Observe que componentes tipo classe utilizam herança da classe Component do React, sendo assim, todo o comportamento de componente já está presente na sua classe desde o primeiro momento. Vamos apenas customizá-lo.
+
+O que desejarmos mostrar na tela usando nosso componente é feito pelo método `render()`. Ele deve retornar um HTML (depois veremos que é mais do isso). Vamos adicioná-lo:
+
+```jsx
+import React from 'react';
+
+class App extends React.Component{
+
+    render(){
+        return <p>Meu primeiro parágrafo em React.</p>
+    }
+}
+
+export default App;
+```
+
+Você já pode ver seu parágrafo aparecer no navegador. Se quiser fazer um HTML de várias linhas, basta colocar todo o conteúdo entre parênteses, mas lembre-se o React só é capaz de renderizar um elemento, portanto todo seu HTML deve ter um elemento raiz:
+
+**Não funciona**
+
+```jsx
+import React from 'react';
+
+class App extends React.Component{
+
+    render(){
+        return (
+          <p>Meu primeiro parágrafo em React.</p>
+          <p>Meu segundo parágrafo em React.</p>
+          <div>
+            <pre>Cansei de parágrafos...</pre>
+          </div>
+        );
+    }
+}
+
+export default App;
+```
+
+**Funciona**
+
+```jsx
+import React from 'react';
+
+class App extends React.Component{
+
+    render(){
+        return (
+          <div>
+            <p>Meu primeiro parágrafo em React.</p>
+            <p>Meu segundo parágrafo em React.</p>
+            <div>
+                <pre>Cansei de parágrafos...</pre>
+            </div>
+          </div>
+        );
+    }
+}
+
+export default App;
+```
+
+Se você não quiser colocar um tag HTML como raiz (algumas vezes isso conflita com css da página e coisas do tipo), você pode colocar um `Fragment`, que é basicamente uma tag vazia:
+
+```jsx
+import React from 'react';
+
+class App extends React.Component{
+
+    render(){
+        return (
+          <>
+            <p>Meu primeiro parágrafo em React.</p>
+            <p>Meu segundo parágrafo em React.</p>
+            <div>
+                <pre>Cansei de parágrafos...</pre>
+            </div>
+          </>
+        );
+    }
+}
+
+export default App;
+```
+
+Versões muito antigas do React podem não aceitar essa sintaxe de fragment, nesse caso use `<React.Fragment></React.Fragment>` no lugar.
+
+Você criou seu primeiro componente no React. Se você já conhecia JavaScript em outro contexto deve ter percebido que o que acabamos de fazer no return do render não é javascript. Uma vez que o HTML não está dentro de uma string.
+
+O que foi escrito dentro do *return*, que pode misturar componentes, HTML, e JavaScript é uma outra linguagem (ou melhor, dialeto) chamada JSX. Ele serve para podermos escrever tanto HTML como JavaScript fora de strings e se colocarmos uma tag que tenha o mesmo nome de um componente ele será renderizado onde a tag estiver. Isso lembra um pouco linguagens de lado servidor como PHP ou ASP.
+
+Nela podemos inserir código JavaScript entre chaves contanto que ele produza um retorno. Por exemplo, vamos mostrar a data de hoje (no formato brasileiro):
+
+```jsx
+import React from 'react';
+
+class App extends React.Component{
+
+    render(){
+        return (
+          <>
+            <p>Meu primeiro parágrafo em React.</p>
+            <p>Meu segundo parágrafo em React.</p>
+            <div>
+              <pre>Cansei de parágrafos...</pre>
+            </div>
+            <p>{ new Date().toLocaleDateString("pt-BR") }</p>
+          </>
+        );
+    }
+}
+
+export default App;
+```
+
+Fizemos um componente estático, que apresenta um HTML na tela. Veremos como deixar os componentes mais interessantes a seguir.
+## Props
+
+Primeiramente vamos organizar um pouco melhor nosso projeto criando uma pasta dentro de `/src` chamada `components` assim todo componente será criado lá e não solto dentro do `/src`:
+
+![https://s3-sa-east-1.amazonaws.com/lcpi/6bd30170-faee-4666-ba97-1baef489593f.png](https://s3-sa-east-1.amazonaws.com/lcpi/6bd30170-faee-4666-ba97-1baef489593f.png)
+
+Vamos agora arrastar o App.js para lá. Isso vai gerar um erro porque o index.js está procurando pelo App.js na pasta antiga.
+
+Vamos corrigir o arquivo `index.js`:
+
+A linha que dizia:
+
+```jsx
+import App from './App';
+```
+
+Deve ser alterada para:
+
+```jsx
+import App from './components/App';
+```
+
+Agora imagine que você quer fazer um componente reutilizável. Por enquanto, vimos componentes com valores fixos, constantes. Não são muitas as possibilidades de reutilização de um componente constante.
+
+Na programação, sempre que desejamos reutilizar algo tornamos o código mais genérico e parametrizamos suas informações. É o que fazemos com funções por exemplo. Uma função que soma 1 e 2 é muito menos útil e reutilizável do que uma que soma qualquer número...
+
+Podemos aplicar a mesma lógica nos componentes do React. Imagine um componente que produz uma caixinha com bordas na tela e tem um título e um texto. Se parametrizarmos o título e o texto poderemos usar essa caixinha em diversas partes de nossa aplicação, até mesmo em outras aplicações!
+
+No React, esses "parâmetros" de um componente são chamados de "props".Podemos receber props pelo construtor do componente.
+
+Vamos ver como fazer isso:
+
+Primeiro crie um arquivo App2.js na pasta components, nele vamos criar um construtor que recebe as props por parâmetro e chama o construtor da super classe.
+
+```jsx
+import React from 'react';
+
+class App2 extends React.Component{
+  constructor(props){
+    super(props);
+  }
+  render(){
+    return ('OK');
+  }
+}
+
+export default App2;
+```
+
+Vamos agora alterar o *render* para usar duas props, uma chamada `title` e uma chamada `text` esses nomes são arbitrários, pode ser o que você desejar.
+
+```jsx
+import React from 'react';
+
+class App2 extends React.Component{
+  constructor(props){
+    super(props);
+  }
+  render(){
+    return(
+    <div className="box">
+        <div className="title">{this.props.title}</div>
+        <div className="text">{this.props.text}</div>
+    </div>);
+  }
+}
+
+export default App2;
+```
+
+Quando for utilizar o componente App2 você pode passar os valores dos props por nome da mesma forma que passaria atributos html.
+
+```jsx
+<App2 title='meu título' text='meu texto'/>
+```
+
+Se seu texto for grande ou contiver HTML ou qualquer outra coisa que torne-o inconveniente para passar por props (porque não poderia ser um atributo na tag), podemos usar outra abordagem.
+
+```jsx
+<div className="text">{this.props.text}</div>
+```
+
+Para:
+
+```jsx
+<div className="text">{this.props.children}</div>
+```
+
+Agora você pode usar seu componente assim:
+
+```jsx
+<App2 title="Isso é um teste">
+    Lorem ipsum dolor sit amet consectetur adipisicing elit. Nihil officia, quam sed officiis libero repellat voluptate dolores amet molestiae nostrum aperiam inventore veritatis aut quaerat, tenetur laudantium natus? Saepe, minus!
+</App2>
+```
+
+Qualquer coisa que você colocar entre a abertura e o fechamento das tags do componente serão passados como `props.children` para o componente! Isso inclui HTML, outros componentes, e até javascript, contanto que esteja entre chaves.
+
+Em seguida veremos como criar componentes com estado, ou seja, com valores internos, que quando modificados fazem com que o componente se renderize novamente na tela.
