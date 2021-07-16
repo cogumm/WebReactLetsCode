@@ -1,11 +1,21 @@
 import React from "react";
 
-function App() {
-  return (
-    <div className="App">
-
-    </div>
-  );
+class App extends React.Component {
+  render(){
+    return(
+      <>
+        <p>
+          Estou vivo!
+        </p>
+        <p>
+          Fragment.
+        </p>
+        <p>
+          {new Date().toLocaleDateString("pt-BR")}
+        </p>
+      </>
+    );
+  }
 }
 
 export default App;
