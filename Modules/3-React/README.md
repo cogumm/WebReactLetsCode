@@ -1,5 +1,20 @@
 # React - Componentes Tipo Classe
 
+### Menu
+<ul style="list-style-type:circle">
+  <li><a href="#introdução-ao-react">Aula 01 - Introdução ao React</a></li>
+  <li><a href="#introdução-aos-componentes">Aula 02 - Introdução aos Componentes</a></li>
+  <li><a href="#instalação">Aula 03 - Instalação</a></li>
+  <li><a href="#componentes-simples">Aula 04 - Componente Simples</a></li>
+  <li><a href="#props">Aula 05 - Props</a></li>
+  <li><a href="#estado">Aula 06 - Estado</a></li>
+  <li><a href="#renderização-condicional">Aula 07 - Renderização Condicional</a></li>
+  <li><a href="#ciclo-de-vida">Aula 08 - Ciclo de Vida</a></li>
+  <li><a href="#renderização-de-listas">Aula 09 - Renderização de Listas</a></li>
+  <li><a href="#componentes-aninhados">Aula 10 - Componentes Aninhados</a></li>
+  <li><a href="#formulários">Aula 11 - Formulários</a></li>
+</ul>
+
 # Aulas do Módulo
 
 ## Introdução ao React
